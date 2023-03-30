@@ -1,0 +1,21 @@
+[{
+  "_id": {
+    "$oid": "6421488ddb295567b4a3b1b8"
+  },
+  "name": "Business"
+},{
+  "_id": {
+    "$oid": "64216f4f427c49b30dfb1f3d"
+  },
+  "name": "Religious"
+},{
+  "_id": {
+    "$oid": "64223273ecd30fc31660591e"
+  },
+  "name": "GK"
+},{
+  "_id": {
+    "$oid": "642232d04b749eed869e16e2"
+  },
+  "name": "Legal"
+}]
