@@ -100,7 +100,7 @@ export class UpdateUserGenre {
 export class UpdateUserBooks {
   @Field(() => String)
   bookId: string;
-  @Field((type) => BOOK_STATUS)
+  @Field((type) => BOOK_STATUS, { nullable: true })
   status: BOOK_STATUS;
 }
 

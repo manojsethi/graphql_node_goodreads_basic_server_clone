@@ -5,7 +5,9 @@
 
 input AddBookInput {
   addedBy: String!
+  author: String!
   categoryId: [String!]!
+  description: String!
   name: String!
   picture: Upload
 }
@@ -18,7 +20,9 @@ enum BOOK_STATUS {
 
 type Book {
   _id: String!
+  author: String
   category: [Category!]!
+  description: String
   image: String
   name: String!
 }
@@ -45,6 +49,7 @@ type Mutation {
   createCategory(name: String!): Category!
   createUser(input: CreateUserInput!): User!
   login(input: LoginUserInput!): String!
+  removeUserBooks(input: UpdateUserBooks!): User!
   updateCategory(input: UpdateUserGenre!): User!
   updateUserBooks(input: UpdateUserBooks!): User!
 }
@@ -61,7 +66,7 @@ type Query {
 
 input UpdateUserBooks {
   bookId: String!
-  status: BOOK_STATUS!
+  status: BOOK_STATUS
 }
 
 input UpdateUserGenre {

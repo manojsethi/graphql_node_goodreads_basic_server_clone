@@ -37,6 +37,9 @@ class BookService {
       .lean();
   }
   async GetBooks(): Promise<Book[]> {
+    let allBooks = await BooksModel.find({})
+      .populate(["categoryId", "addedBy"])
+      .lean();
     return await BooksModel.find({}).populate(["categoryId", "addedBy"]).lean();
   }
   async GetBookById(id: string): Promise<Book> {

@@ -13,6 +13,14 @@ export class Book {
   @prop({ required: true })
   name: string;
 
+  @Field(() => String, { nullable: true })
+  @prop({ required: true })
+  author: string;
+
+  @Field(() => String, { nullable: true })
+  @prop({ required: true })
+  description: string;
+
   @prop({ ref: () => User, type: mongoose.Types.ObjectId })
   public addedBy: Ref<User>;
 
@@ -32,6 +40,10 @@ export const BooksModel = getModelForClass(Book);
 export class AddBookInput {
   @Field(() => String!)
   name: string;
+  @Field(() => String!)
+  author: string;
+  @Field(() => String!)
+  description: string;
   @Field(() => String!)
   addedBy: string;
   @Field(() => [String]!)

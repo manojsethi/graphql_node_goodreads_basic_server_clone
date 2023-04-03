@@ -63,6 +63,32 @@ class UserService {
     return result;
   }
 
+  async RemoveUserBooks(input: UpdateUserBooks, context: Context) {
+    let user = await UserModel.findById(context.user?._id);
+    if (user) {
+      let userBooks = user.userBooks.filter(
+        (x) => x.bookId.toString() !== input.bookId
+      );
+
+      await UserModel.findByIdAndUpdate(context.user?._id, {
+        userBooks,
+      });
+    }
+    let result = await UserModel.findById(context.user?._id)
+      .populate([
+        { path: "categoryIds" },
+        {
+          path: "userBooks",
+          populate: {
+            path: "bookId",
+            model: BooksModel,
+          },
+        },
+      ])
+      .lean();
+    return result;
+  }
+
   async LoginUser(input: LoginUserInput, context: Context) {
     input.email = input.email.toLowerCase().trim();
     let User = await UserModel.findOne({ email: input.email })
@@ -72,7 +98,7 @@ class UserService {
       let tokenObj: any = User;
       delete tokenObj.password;
       const token = jwt.sign(tokenObj, EnvironmentConfig.JWT_SECRET, {
-        expiresIn: "30m",
+        expiresIn: "120m",
       });
       context.res.cookie("accessToken", token, {
         maxAge: 3.154e10,
