@@ -1,3 +1,4 @@
+import { mongoose } from "@typegoose/typegoose";
 import fs from "fs";
 import { FileUpload } from "graphql-upload";
 import path from "path";
@@ -36,11 +37,16 @@ class BookService {
       .populate(["categoryId", "addedBy"])
       .lean();
   }
-  async GetBooks(): Promise<Book[]> {
-    let allBooks = await BooksModel.find({})
+  async GetBooks(id: string | null): Promise<Book[]> {
+    let query = {};
+    if (id)
+      query = {
+        _id: new mongoose.Types.ObjectId(id),
+      };
+    let allBooks = await BooksModel.find(query)
       .populate(["categoryId", "addedBy"])
       .lean();
-    return await BooksModel.find({}).populate(["categoryId", "addedBy"]).lean();
+    return allBooks as Book[];
   }
   async GetBookById(id: string): Promise<Book> {
     return await BooksModel.findById(id)

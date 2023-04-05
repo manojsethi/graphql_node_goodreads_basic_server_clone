@@ -9,6 +9,7 @@ import {
   LoginUserInput,
   UpdateUserBooks,
   UpdateUserGenre,
+  UserBooks,
   UserModel,
 } from "../schema/user.schema";
 
@@ -35,41 +36,18 @@ class UserService {
       let foundBookIndex = userBooks.findIndex(
         (book) => book.bookId.toString() === input.bookId
       );
-      if (foundBookIndex !== -1)
+      if (foundBookIndex !== -1) {
         userBooks[foundBookIndex].status = input.status;
-      else {
+        userBooks[foundBookIndex][
+          (input.status.toLowerCase() + "_time") as keyof UserBooks
+        ] = new Date() as any;
+      } else {
         userBooks.push({
           bookId: new mongoose.Types.ObjectId(input.bookId) as any,
           status: input.status,
-          createdAt: new Date(),
+          want_to_read_time: new Date(),
         });
       }
-      await UserModel.findByIdAndUpdate(context.user?._id, {
-        userBooks,
-      });
-    }
-    let result = await UserModel.findById(context.user?._id)
-      .populate([
-        { path: "categoryIds" },
-        {
-          path: "userBooks",
-          populate: {
-            path: "bookId",
-            model: BooksModel,
-          },
-        },
-      ])
-      .lean();
-    return result;
-  }
-
-  async RemoveUserBooks(input: UpdateUserBooks, context: Context) {
-    let user = await UserModel.findById(context.user?._id);
-    if (user) {
-      let userBooks = user.userBooks.filter(
-        (x) => x.bookId.toString() !== input.bookId
-      );
-
       await UserModel.findByIdAndUpdate(context.user?._id, {
         userBooks,
       });

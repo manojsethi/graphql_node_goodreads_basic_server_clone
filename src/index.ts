@@ -47,7 +47,7 @@ const bootstrap = async () => {
   app.use(
     "/graphql",
     cors<cors.CorsRequest>({
-      origin: "http://localhost:3000",
+      origin: ["http://localhost:3000", "http://localhost:3001"],
       credentials: true,
     }),
     graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 10 }),

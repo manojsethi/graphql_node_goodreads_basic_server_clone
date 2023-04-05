@@ -1,6 +1,7 @@
 import { getModelForClass, mongoose, prop, Ref } from "@typegoose/typegoose";
+import { GraphQLFloat } from "graphql";
 import { FileUpload, GraphQLUpload } from "graphql-upload";
-import { Field, InputType, ObjectType } from "type-graphql";
+import { Field, InputType, Int, ObjectType } from "type-graphql";
 import { Category } from "./category.schema";
 import { User } from "./user.schema";
 
@@ -16,6 +17,10 @@ export class Book {
   @Field(() => String, { nullable: true })
   @prop({ required: true })
   author: string;
+
+  @Field(() => Date, { nullable: true })
+  @prop()
+  publishDate: Date;
 
   @Field(() => String, { nullable: true })
   @prop({ required: true })
@@ -33,6 +38,14 @@ export class Book {
   @Field(() => String, { nullable: true })
   @prop({ required: false })
   image: string;
+
+  @Field(() => Int, { nullable: true })
+  @prop({ required: false })
+  totalRatingCount: number;
+
+  @Field(() => GraphQLFloat, { nullable: true })
+  @prop({ required: false })
+  totalRatingValue: number;
 }
 export const BooksModel = getModelForClass(Book);
 
@@ -50,6 +63,7 @@ export class AddBookInput {
   categoryId: string[];
   @Field(() => GraphQLUpload, { nullable: true })
   picture: FileUpload;
-
+  @Field()
+  publishDate: Date;
   image: string;
 }

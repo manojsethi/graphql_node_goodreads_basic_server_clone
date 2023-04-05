@@ -15,6 +15,7 @@ enum BOOK_STATUS {
   WANT_TO_READ = "WANT_TO_READ",
   READING = "READING",
   READ = "READ",
+  FINISH = "FINISH",
 }
 registerEnumType(BOOK_STATUS, {
   name: "BOOK_STATUS",
@@ -27,13 +28,25 @@ export class UserBooks {
   @Field(() => Book, { nullable: true })
   public book?: Book;
 
-  @Field(() => String)
-  @prop({ default: Date.now() })
-  createdAt?: Date;
-
   @Field((type) => BOOK_STATUS)
   @prop({ required: true })
   status: BOOK_STATUS;
+
+  @Field((type) => String)
+  @prop()
+  want_to_read_time: Date;
+
+  @Field((type) => String, { nullable: true })
+  @prop()
+  reading_time?: Date;
+
+  @Field((type) => String, { nullable: true })
+  @prop()
+  read_time?: Date;
+
+  @Field((type) => String, { nullable: true })
+  @prop()
+  finish_time?: Date;
 }
 
 @pre<User>("save", async function () {

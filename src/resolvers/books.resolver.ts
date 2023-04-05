@@ -26,13 +26,10 @@ export class BooksResolver implements ResolverInterface<Book> {
 
   @Authorized()
   @Query(() => [Book])
-  getBooks(): Promise<Book[]> {
-    return this.bookService.GetBooks();
-  }
-  @Authorized()
-  @Query(() => Book)
-  getBook(@Arg("id", () => String) id: string): Promise<Book> {
-    return this.bookService.GetBookById(id);
+  getBooks(
+    @Arg("id", () => String, { nullable: true }) id: string
+  ): Promise<Book[]> {
+    return this.bookService.GetBooks(id);
   }
 
   @Authorized()

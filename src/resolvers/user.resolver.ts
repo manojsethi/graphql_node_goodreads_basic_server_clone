@@ -63,15 +63,6 @@ class UserResolver {
     return this.userService.UpdateUserBooks(input, context);
   }
 
-  @Authorized()
-  @Mutation(() => User)
-  removeUserBooks(
-    @Arg("input") input: UpdateUserBooks,
-    @Ctx() context: Context
-  ) {
-    return this.userService.RemoveUserBooks(input, context);
-  }
-
   @Mutation(() => String)
   login(@Arg("input") input: LoginUserInput, @Ctx() context: Context) {
     return this.userService.LoginUser(input, context);

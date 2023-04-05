@@ -10,9 +10,18 @@ input AddBookInput {
   description: String!
   name: String!
   picture: Upload
+  publishDate: DateTime!
+}
+
+input AddBookRating {
+  addedBy: String!
+  bookId: String!
+  rating: Int!
+  review: String!
 }
 
 enum BOOK_STATUS {
+  FINISH
   READ
   READING
   WANT_TO_READ
@@ -25,6 +34,18 @@ type Book {
   description: String
   image: String
   name: String!
+  publishDate: DateTime
+  totalRatingCount: Int
+  totalRatingValue: Float
+}
+
+type BookRating {
+  _id: String!
+  publishDate: DateTime!
+  rating: Int!
+  review: String!
+  totalTimeTaken: Int
+  user: User!
 }
 
 type Category {
@@ -39,6 +60,11 @@ input CreateUserInput {
   password: String!
 }
 
+"""
+The javascript `Date` as string. Type represents date and time as the ISO Date string.
+"""
+scalar DateTime
+
 input LoginUserInput {
   email: String!
   password: String!
@@ -46,17 +72,17 @@ input LoginUserInput {
 
 type Mutation {
   addBook(input: AddBookInput!, picture: Upload): Book!
+  addBookRating(input: AddBookRating!): [BookRating!]!
   createCategory(name: String!): Category!
   createUser(input: CreateUserInput!): User!
   login(input: LoginUserInput!): String!
-  removeUserBooks(input: UpdateUserBooks!): User!
   updateCategory(input: UpdateUserGenre!): User!
   updateUserBooks(input: UpdateUserBooks!): User!
 }
 
 type Query {
-  getBook(id: String!): Book!
-  getBooks: [Book!]!
+  getBookRating(id: String!): [BookRating!]!
+  getBooks(id: String): [Book!]!
   getCategories: [Category!]!
   getCategoryById(id: String!): Category!
   getUpdatedMe: User!
@@ -86,6 +112,9 @@ type User {
 
 type UserBooks {
   book: Book
-  createdAt: String!
+  finish_time: String
+  read_time: String
+  reading_time: String
   status: BOOK_STATUS!
+  want_to_read_time: String!
 }
