@@ -47,6 +47,19 @@ class BookService {
       .lean();
     return allBooks as Book[];
   }
+
+  async GetBooksByUser(id: string | null): Promise<Book[]> {
+    let query = {};
+    if (id)
+      query = {
+        addedBy: new mongoose.Types.ObjectId(id),
+      };
+    let allBooks = await BooksModel.find(query)
+      .populate(["categoryId", "addedBy"])
+      .lean();
+    return allBooks as Book[];
+  }
+
   async GetBookById(id: string): Promise<Book> {
     return await BooksModel.findById(id)
       .populate(["categoryId", "addedBy"])

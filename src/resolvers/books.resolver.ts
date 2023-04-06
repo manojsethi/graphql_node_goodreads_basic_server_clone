@@ -1,8 +1,10 @@
 import { FileUpload, GraphQLUpload } from "graphql-upload";
+import Context from "src/interfaces/context.interface";
 import { Category } from "src/schema/category.schema";
 import {
   Arg,
   Authorized,
+  Ctx,
   FieldResolver,
   Mutation,
   Query,
@@ -30,6 +32,12 @@ export class BooksResolver implements ResolverInterface<Book> {
     @Arg("id", () => String, { nullable: true }) id: string
   ): Promise<Book[]> {
     return this.bookService.GetBooks(id);
+  }
+
+  @Authorized()
+  @Query(() => [Book])
+  getBooksByUser(@Ctx() context: Context): Promise<Book[]> {
+    return this.bookService.GetBooksByUser(context.user!._id);
   }
 
   @Authorized()
