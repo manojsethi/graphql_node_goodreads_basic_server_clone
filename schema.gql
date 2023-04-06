@@ -90,6 +90,10 @@ type Query {
   me: User!
 }
 
+type Subscription {
+  newRating(bookId: String!): BookRating!
+}
+
 input UpdateUserBooks {
   bookId: String!
   status: BOOK_STATUS

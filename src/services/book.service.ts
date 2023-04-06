@@ -2,12 +2,11 @@ import { mongoose } from "@typegoose/typegoose";
 import fs from "fs";
 import { FileUpload } from "graphql-upload";
 import path from "path";
-import { rootPath } from "../index";
 import { AddBookInput, Book, BooksModel } from "../schema/books.schema";
 
 class BookService {
   storeFS = ({ stream, filename }: any): Promise<string> => {
-    const uploadDir = path.join(rootPath, "photos");
+    const uploadDir = path.join("rootPath", "photos");
     const filePath = `${uploadDir}/${filename}`;
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });

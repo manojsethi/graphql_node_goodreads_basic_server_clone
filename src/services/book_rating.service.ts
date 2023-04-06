@@ -1,4 +1,5 @@
 import { mongoose } from "@typegoose/typegoose";
+import { PubSubEngine } from "type-graphql";
 import Context from "../interfaces/context.interface";
 import { Book, BooksModel } from "../schema/books.schema";
 import {
@@ -14,7 +15,8 @@ class BookRatingService {
   }
   async AddBookRating(
     input: AddBookRating,
-    context: Context
+    context: Context,
+    pubSub: PubSubEngine
   ): Promise<BookRating[]> {
     input.addedBy = new mongoose.Types.ObjectId(input.addedBy) as any;
     input.bookId = new mongoose.Types.ObjectId(input.bookId) as any;
@@ -38,7 +40,7 @@ class BookRatingService {
       obj.totalTimeTaken = timeDiff;
       obj.publishDate = new Date();
 
-      await BooksRatingModel.create(obj);
+      let response = await BooksRatingModel.create(obj);
       if (!book.totalRatingCount) book.totalRatingCount = 0;
       book.totalRatingCount += 1;
       if (book.totalRatingCount == 1) book.totalRatingValue = input.rating;
@@ -49,6 +51,11 @@ class BookRatingService {
         },
         book
       );
+      const payload: BookRating = (
+        await response.populate(["addedBy"])
+      ).toJSON() as BookRating;
+
+      await pubSub.publish("NEW_RATING", payload);
     }
     return await BooksRatingModel.find({ bookId: input.bookId })
       .populate(["addedBy"])

@@ -82,8 +82,8 @@ class UserService {
         maxAge: 3.154e10,
         httpOnly: true,
         domain: "localhost",
-        sameSite: "strict",
-        secure: false,
+        sameSite: "none",
+        secure: true,
         path: "/",
       });
       return token;
