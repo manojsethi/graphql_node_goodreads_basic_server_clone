@@ -10,6 +10,10 @@ import express, { Express } from "express";
 import { graphqlUploadExpress } from "graphql-upload";
 import { useServer } from "graphql-ws/lib/use/ws";
 import { createServer } from "http";
+import i18next from "i18next";
+
+import Backend from "i18next-fs-backend";
+import middleware from "i18next-http-middleware";
 import jwt from "jsonwebtoken";
 import path from "path";
 import "reflect-metadata";
@@ -21,12 +25,27 @@ import { resolvers } from "./resolvers";
 import { User } from "./schema/user.schema";
 import { DataloaderService } from "./services/dataloader.service";
 import AuthValidator from "./utils/auth.validator";
+
 dotenv.config();
 export const rootPath = __dirname;
-
+i18next
+  .use(middleware.LanguageDetector)
+  .use(Backend)
+  .init({
+    backend: {
+      loadPath: path.join(__dirname, "/locales/{{lng}}/translation.json"),
+    },
+    fallbackLng: "en",
+    supportedLngs: ["en", "hi"],
+    preload: ["en", "hi"],
+    load: "languageOnly",
+    saveMissing: true,
+  });
 const bootstrap = async () => {
   mongoose.connect(EnvironmentConfig.MONGODB_URI);
   const app: Express = express();
+
+  app.use(middleware.handle(i18next));
   let schema = await buildSchema({
     resolvers: resolvers,
     validate: false,
@@ -52,19 +71,14 @@ const bootstrap = async () => {
           };
         },
       },
-      // ApolloServerPluginLandingPageGraphQLPlayground({
-      //   settings: {
-      //     "request.credentials": "include",
-      //     "editor.reuseHeaders": false,
-      //   },
-      //   subscriptionEndpoint: "ws://localhost:4000/subscriptions",
-      // }),
     ],
   });
 
   await apolloServer.start();
-
+  app.use("/locales", express.static(path.join(__dirname, "locales")));
   app.use("/photos", express.static(path.join(__dirname, "photos")));
+  app.post("/locales/add/:lng/:ns", middleware.missingKeyHandler(i18next));
+
   app.use(cookieParser());
   app.use(
     "/graphql",
@@ -81,6 +95,10 @@ const bootstrap = async () => {
     expressMiddleware(apolloServer, {
       context: async (ctx: Context) => {
         let { req, res } = ctx;
+        if (req.cookies?.NEXT_LOCALE) {
+          req.i18n.changeLanguage(req.cookies.NEXT_LOCALE);
+        } else req.i18n.changeLanguage("en");
+
         if (req.cookies?.accessToken) {
           let token = req.cookies?.accessToken;
           try {

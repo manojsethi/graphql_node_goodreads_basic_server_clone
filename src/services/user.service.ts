@@ -68,6 +68,7 @@ class UserService {
   }
 
   async LoginUser(input: LoginUserInput, context: Context) {
+    let d = context.req.t("home.title");
     input.email = input.email.toLowerCase().trim();
     let User = await UserModel.findOne({ email: input.email })
       .populate(["categoryIds"])
@@ -87,7 +88,7 @@ class UserService {
         path: "/",
       });
       return token;
-    } else throw new Error("User doesn't exists.");
+    } else throw new Error(`${context.req.t("errors.user_does_not_exists")}`);
   }
 
   async getUserById(context: Context) {
