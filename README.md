@@ -1,6 +1,15 @@
 
-# GoodReads Server clone in GraphQL & NodeJS
+# GoodReads Server clone in GraphQL & NodeJS with Apollo Server.
 
+Demo shows the usage of Apollo Server 4 with i18n, Dataloader, File Upload, Authentication and Subscriptions for real time update. All of this is done with Typescript.
+
+### Technologies Used
+- Apollo Server 4
+- GraphQL
+- MongoDB
+- Websockets
+- i18next
+- JWT
 
 
 
